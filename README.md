@@ -21,6 +21,11 @@ The core idea is fundamentally different from a scripted animation: HazardLens m
 │ • Side-by-side branch forks   │ • Dynamic Point-Light Fire & Shockwaves     │
 │ • Loss-Avoided ROI ($M USD)   │ • Swirling Deluge Water Mist FX             │
 │ • VCR Time-Scrubber Replay    │ • ERPG/ALOHA Threat Zone Heatmap Rings      │
+├───────────────────────────────┼─────────────────────────────────────────────┤
+│ 5. Emergency Planning Lab     │ 6. Decision Algorithms                      │
+│ • Live risk scoring           │ • Dijkstra safest-route search              │
+│ • Evacuation route analysis   │ • Hazard-weighted graph costs               │
+│ • Intervention ranking        │ • Deterministic branch comparison          │
 └───────────────────────────────┴─────────────────────────────────────────────┘
 ```
 
@@ -31,9 +36,9 @@ The core idea is fundamentally different from a scripted animation: HazardLens m
 1. **Thermal Radiation Field (API RP 521 / SFPE)**:
    $$q(r) = \min\left(80, \frac{I_{\text{fire}} \cdot 120}{r^2}\right) \quad [\text{kW/m}^2]$$
 2. **ERPG / ALOHA Threat Zone Perimeters**:
-   - **Hot Zone (Lethal in 10s)**: $q \ge 10\text{ kW/m}^2 \implies r_{\text{hot}} = \sqrt{\frac{120 \cdot I}{10}}$
-   - **Warm Zone (2nd Degree Burn in 60s)**: $q \ge 5\text{ kW/m}^2 \implies r_{\text{warm}} = \sqrt{\frac{120 \cdot I}{5}}$
-   - **Cold Zone (Public Safety Boundary)**: $q \ge 1.6\text{ kW/m}^2 \implies r_{\text{cold}} = \sqrt{\frac{120 \cdot I}{1.6}}$
+   - **Hot Zone**: $q \ge 10\text{ kW/m}^2$
+   - **Warm Zone**: $q \ge 5\text{ kW/m}^2$
+   - **Cold Zone**: $q \ge 1.6\text{ kW/m}^2$
 3. **Sadovsky Overpressure Formulation (Shockwaves & BLEVE)**:
    $$Z = \frac{r}{\sqrt[3]{W_{\text{TNT}}}}, \quad \Delta P(Z) = \frac{100}{Z} + \frac{400}{Z^2} \quad [\text{kPa}]$$
 4. **Threat-Repulsion Worker Evacuation Navigation**:
@@ -43,11 +48,15 @@ The core idea is fundamentally different from a scripted animation: HazardLens m
 
 ## ⚡ Key Features
 
-* **Side-by-Side Counterfactual Decision Engine**: Click **`⚡ FORK & COMPARE INTERVENTION`** to run a 45-second forward simulation comparing *Unmitigated Worst-Case* vs *Active Response* (calculating Direct Loss Avoided in \$M USD, BLEVE prevention, and crew dose reduction).
+* **Side-by-Side Counterfactual Decision Engine**: Run a 45-second branch simulation comparing *Unmitigated Worst-Case* vs *Active Response* and calculate simulated direct loss avoided, asset damage, fire count and crew dose.
+* **Emergency Planning Lab**: A dedicated decision-support dashboard at `/planner.html` with live risk scoring, safest evacuation routes and intervention ranking.
+* **Hazard-Weighted Dijkstra Evacuation**: Graph edge costs increase around active fires, releases and failed equipment, so the safest route can differ from the shortest geometric route.
+* **Intervention Optimizer**: Deterministically forks the current twin world for multiple candidate actions and ranks them by loss avoided, crew-dose reduction, asset protection and fire reduction.
+* **Live Risk Assessment**: Combines active fires, releases, failed assets, worker thermal dose and local hazard intensity into a transparent 0–100 risk score with contributing factors.
 * **VCR Time-Travel / Replay Slider**: Scrub backward and forward in time across a circular state buffer to inspect disaster progression frame-by-frame.
-* **Animated Cyber-Gauges**: Custom SVG temperature thermometer bars, radial integrity progress rings, and topology connection hyperlinks.
-* **Active Deluge Mist**: Swirling 3D water deluge spray particles enveloping equipment during automated suppression.
-* **16/16 Verified Automated Tests**: Rigorous unit, integration, and contract tests covering all physical twins and counterfactual algorithms.
+* **Animated Cyber-Gauges & Active Deluge Mist**: 3D visualization of equipment state, fire, shockwaves and suppression response.
+
+> **Safety note:** HazardLens is an educational simulation and decision-support prototype. Its outputs are not validated for real-world emergency operations.
 
 ---
 
@@ -63,9 +72,17 @@ npm test
 ```bash
 npm run viewer
 ```
-Open the local URL (e.g. `http://localhost:5173`) in any modern web browser.
+Open `http://localhost:5173/` for the 3D twin.
 
-### 3. Production Build
+### 3. Open the Emergency Planning Lab
+With the viewer running, open:
+```text
+http://localhost:5173/planner.html
+```
+
+The lab lets you inject a leak/fire scenario, inspect the live risk score, calculate safest evacuation routes and compare candidate interventions.
+
+### 4. Production Build
 ```bash
 npm run build:all
 ```
