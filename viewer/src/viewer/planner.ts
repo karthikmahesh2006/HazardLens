@@ -85,4 +85,4 @@ document.getElementById('reset')!.onclick=()=>{sim.reset();render()};
 document.getElementById('back')!.onclick=()=>{location.href='/'};
 
 render();
-setInterval(()=>{sim.update(.25);render()},250);
+setInterval(()=>{sim.update(.25);render()},1000);
