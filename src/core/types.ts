@@ -1,6 +1,7 @@
 export type TwinKind =
   | "tank" | "pipe" | "valve" | "ignition" | "wall" | "weather"
-  | "release" | "fire" | "suppression" | "worker" | "route";
+  | "release" | "fire" | "suppression" | "worker" | "route"
+  | "pump" | "flare" | "blast";
 
 export type Fidelity = 0 | 1 | 2 | 3 | 4;
 
@@ -14,7 +15,7 @@ export interface PhysicalProfile {
 
 export interface TwinRelationship {
   targetId: string;
-  type: "connected" | "nearby" | "depends_on" | "contained_by";
+  type: "connected" | "nearby" | "depends_on" | "contained_by" | "controls" | "protects";
 }
 
 export interface TwinHistoryEntry {
@@ -44,7 +45,47 @@ export interface TwinMetadata {
   history?: TwinHistoryEntry[];
 }
 
-export type EventType = "fault.pipe_leak"|"release.created"|"release.updated"|"release.ignited"|"fire.created"|"thermal.exposure"|"asset.failed"|"valve.command"|"suppression.command";
+export type EventType =
+  | "fault.pipe_leak"
+  | "fault.pump_overheat"
+  | "fault.valve_fail"
+  | "release.created"
+  | "release.updated"
+  | "release.ignited"
+  | "fire.created"
+  | "fire.extinguished"
+  | "blast.created"
+  | "blast.impact"
+  | "blast.shockwave_contact"
+  | "thermal.exposure"
+  | "asset.failed"
+  | "valve.command"
+  | "suppression.command"
+  | "worker.evacuate"
+  | "worker.exposure"
+  | "flare.ignited";
+
+export interface ThreatZoneRadii {
+  hotRadiusM: number;    // > 10 kW/m2 or > 20 kPa (Lethal in 10s)
+  warmRadiusM: number;   // > 5 kW/m2 or > 10 kPa (2nd degree burn in 60s)
+  coldRadiusM: number;   // > 1.6 kW/m2 (ERG Public Safety Isolation)
+}
+
+export interface CounterfactualComparison {
+  baselineName: string;
+  counterfactualName: string;
+  horizonDurationSec: number;
+  unmitigatedLossUsd: number;
+  mitigatedLossUsd: number;
+  lossAvoidedUsd: number;
+  assetsDestroyedBaseline: number;
+  assetsDestroyedMitigated: number;
+  crewMaxDoseBaseline: number;
+  crewMaxDoseMitigated: number;
+  totalFiresBaseline: number;
+  totalFiresMitigated: number;
+  blevePrevented: boolean;
+}
 
 export interface SimEvent<T extends Record<string,unknown> = Record<string,unknown>> {
   id:string;
