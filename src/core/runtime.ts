@@ -3,7 +3,7 @@ import { FireTwin, ReleaseTwin } from "../twins/hazards.js";
 export class SimulationRuntime {
  private readonly registry=new Map<string,Twin>(); private readonly queue:SimEvent[]=[]; private readonly history:SimEvent[]=[]; private sequence=0; time=0;
  constructor(twins:Twin[]=[]){for(const t of twins)this.add(t)} add(t:Twin){if(this.registry.has(t.state.id))throw new Error(`Duplicate twin ${t.state.id}`);this.registry.set(t.state.id,t)} get(id:string){return this.registry.get(id)}
- emit<T>(e:Omit<SimEvent<T>,"id"|"time">){this.queue.push({...e,id:`evt-${++this.sequence}`,time:this.time})}
+ emit<T extends Record<string,unknown>>(e:Omit<SimEvent<T>,"id"|"time">){this.queue.push({...e,id:`evt-${++this.sequence}`,time:this.time})}
  step(dt:number){if(dt<=0)throw new Error("dt must be positive");this.drainEvents();const c=this.context();for(const t of [...this.registry.values()])if(t.state.active)t.tick(dt,c);this.time+=dt;this.drainEvents()}
  run(duration:number,dt=.25){const end=this.time+duration;while(this.time+1e-9<end)this.step(Math.min(dt,end-this.time))}
  snapshot():WorldSnapshot{return{time:this.time,twins:[...this.registry.values()].map(t=>structuredClone(t.state)),events:structuredClone(this.history)}}
