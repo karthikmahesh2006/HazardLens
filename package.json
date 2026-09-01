@@ -7,7 +7,9 @@
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test dist/tests/*.test.js",
     "demo": "npm run build && node dist/src/demo.js",
-    "viewer": "vite --host 0.0.0.0"
+    "viewer": "vite --config viewer/vite.config.ts --host 0.0.0.0",
+    "viewer:build": "vite build --config viewer/vite.config.ts",
+    "build:all": "npm run build && npm run viewer:build"
   },
   "dependencies": {
     "three": "^0.180.0",
